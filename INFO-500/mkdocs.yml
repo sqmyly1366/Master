@@ -1,0 +1,74 @@
+site_name: INFO-H-500 Image Acquisition & Processing
+site_description: INFO-H-500 lecture and labs notes.
+repo_url: https://github.com/odebeir/test_mkdocs
+edit_uri: ""
+use_directory_urls: false
+
+theme:
+    name: mkdocs
+    locale: en
+    #analytics: {gtag: 'G-274394082'}
+    highlightjs: true
+    hljs_languages:
+        - yaml
+        - django
+
+copyright: <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="http://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /> maintained by </a>Olivier Debeir and <a href="">contributors</a>.
+
+nav:
+  - Home: index.md
+ # - Notebook: nb1.ipynb
+  - 1.Introduction:
+      Biological vision: Introduction/01/01-Biological_vision.md
+      Image sensors: Introduction/02/02-Image_sensors.md
+      Digital image: Introduction/03/03-Digital_image.ipynb
+  - 2.Low-level image processing:
+      Point processing: Low-level_image_processing/01-Point_processing.ipynb
+      Linear filters: Low-level_image_processing/02-Linear_filtering.ipynb
+      Non-linear filters: Low-level_image_processing/03-Non_linear_filtering.ipynb
+      Image restoration: Low-level_image_processing/04-Image_restoration.ipynb
+      Edge detection: Low-level_image_processing/05-Edge_detection.ipynb
+  - 3.Image segmentation:
+      Image procesing chain: Image_segmentation/00-Image_processing_chain.ipynb
+      Histogram based: Image_segmentation/01-Histogram_based_image_segmentation.ipynb
+      Border based segmentation: Image_segmentation/02-Border-based_segmentation.ipynb
+      Region based segmentation: Image_segmentation/03-Region_based_segmentation.ipynb
+      Model based segmentation:
+        Live-wire: Image_segmentation/04-Live-wire.ipynb
+        Active contours: Image_segmentation/05-Active_contour.ipynb
+        Hough transform: Image_segmentation/06-Hough_transform.ipynb
+      Examples: Image_segmentation/07-Examples.ipynb
+  - 4.Morphomathematics:
+      Basic operators: Morphomathematics/01-Operators.ipynb
+      Combined operators: Morphomathematics/02-Combined_operations.ipynb
+      Watershed transform: Morphomathematics/03-Watershed_transform.ipynb
+      Graylevel morphology: Morphomathematics/04-Graylevel_morphology.ipynb
+  - 5.Objects features:
+      Statistical features: Feature_extraction/01-Statistical_features.ipynb
+      Contour features: Feature_extraction/02-Contour_features.ipynb
+      Moments: Feature_extraction/03-Moments.ipynb
+      Texture features: Feature_extraction/04-Texture_features.ipynb
+  - LABS: labs.md
+  - References: references.md
+  - About: about.md
+plugins:
+  - mkdocs-jupyter:
+      ignore_h1_titles: False
+      include_source: True
+      execute: True
+  - search
+  - mermaid2
+#  - pdf-export
+#  - print-site
+markdown_extensions:
+  - toc:
+      permalink: 
+  - admonition
+  - pymdownx.details
+  - attr_list
+  - def_list
+#  - pymdownx.superfences:
+#      custom_fences:
+#        - name: mermaid
+#          class: mermaid
+#          format: !!python/name:pymdownx.superfences.fence_code_format
