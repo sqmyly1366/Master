@@ -1,0 +1,43 @@
+TP1:
+-Prove L is regular
+-Design a NFA from L
+-Transform (epsilon-) NFA to DFA
+
+TP2:
+-Design a RE from L
+-Give RE from DFA
+-Convert RE to (epsilon-) NFA
+-Extended regular expression (ERE)
+
+TP3:
+-Kinds of grammar
+-Derivation (normal, leftmost, rightmost)
+-Write a context-free/sensitive grammar
+
+TP4:
+-Remove the useless symbols in the grammar
+-ambiguous and priorities
+-Left-factor
+-Left recursion removal algorithm
+
+TP5:
+-Design a pushdown automaton (PDA)
+-Parser tree
+-Simulate the top-down parser
+-Simulate the bottom-up parser
+
+TP6:
+-First sets and follow sets
+-LL(1)
+-Action table
+-Program a recursive descent parser
+
+TP7:
+-First sets, follow sets and action table
+-Parse tree
+-Table of symbols (ToS)
+
+TP8:
+-LR(0) CFSM:Canonical finite state machine
+-SLR
+-LALR
