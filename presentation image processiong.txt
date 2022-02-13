@@ -1,0 +1,42 @@
+Hello, in this video, we are going to talk about the image cartoonization.
+My name is yang, and i will do this presentation with aris, carolina and cedric.
+
+
+
+
+
+
+This presentation is based on four scientific papers which bibliography will be posted in the end of the slides.
+So besides the introduction and the conclusion, Our presentation will be given in three parts. 
+The first part deals with filters, the second part relates the comparison between these filters and the third part concerns the generative adversarial network.
+
+
+
+
+As we know, cartoons are an artistic form widely used in our daily life, like other forms of artworks, many famous cartoon
+images were created  based on real-world scenes. However, manually recreating real-world scenes in cartoon styles is very
+laborious and involves substantial artistic skill.
+So it would be interesting to reduce human effort by using automation technology and that's what we wanna share with you today.
+
+
+
+
+There are in general 2 kinds of filters that we can use for the image cartoonization, the smootherning filters and the filters using
+the vector quantization methods, we will explain each of them and then make a comparison between them.
+
+
+
+
+
+So i will start with the first kind of basic filters, the Bilateral filter.
+It is a filter used for noise reducing and edge-preserving, it mainly achieves this effect through the closeness function and the similarity
+function which varies between 0 and 1.
+And the filtering function relations to these two functions above.
+In a flat area, the difference between the pixel values ​​of adjacent pixels is small, so the similarity function tend to be 1, at this time,
+the closeness function plays a major role, it is equivalent to directly performing gaussian blur on this area.
+In an edge area, the difference between the pixel values of adjacent pixels is very big, so the similarity function tend to be 0, at this time,
+The current pixel is basically not affected, so that the detailed information of the edge of the original image is maintained.
+
+so BLF is used to eliminate noise which creates a cartoon effect after several iterations. 
+However, BLF is  not useful in  excluding high-contrast  details, since it leaves lots of  
+noise and  small regions untouched. This problem is fulfilled by the Anisotropic Filtering.
