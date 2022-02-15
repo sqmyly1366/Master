@@ -1,0 +1,17 @@
+Region based segmentation
+
+There are 2 basic forms of this method, region growing and split then merge.
+Region growing  is that we start from a seed pixel in the object that we are interested in and let it grow towards the edge,
+then we recruit the neighbour pixels.
+Split and merge is that we split the image iteratively until every subpart is homogeneous, then we merge adjacent
+homogeneous subparts. This homogeneity criterion can be evaluated by the variance, entropy or co-occurence matrix
+
+The idea is to consider an image as an 2D and a half data, in which we consider the gray level as the altitude.
+Then we look at the gradient of the image, the borders of the objects correspond to the crests of the gradient surface.
+So in an image, there are multiple basins and in each basin we have a local minima, and the borders can be detected
+each time then two adjacent basins are merging, we can add a virtual dam and it's the border.
+advantage: sensitive to the borders.
+limitations: over-segmentation since there could be two many regions for each local minima.
+solution: either use the pre-fiter image by using for example the median fiter or use marked watershed.
+or merge adjacent basins which have similar gray level by labeling the remaining regions after removing unwanted edges.
+Instead of starting from the minimum value, you can use a relatively high grayscale pixel as a starting point

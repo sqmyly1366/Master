@@ -1,0 +1,63 @@
+Histogram based segmentation
+goods: easy and fast
+inconvenient: when the object that we are interested in has a variable brightness or in presence of shadows. This method won't
+work that well.
+The easiest way is to use the image threshold and percentile threshold, but it's very limited cause we often can't find the best 
+threshold directly. There are two automated methods that we can use to find the best thresholds.
+Both of these two methods begin by spliting the histogram in 2 distributions.
+Optimal threshold tries to maximize the distance between the centroid of the two distributions by an iterative method.
+While
+Otsu threshold tries all possible thresholds and finds the one that maximize the inter-class variance while minimizing the
+intra-class variance.
+
+Otsu threshold suppose that the histogram contains 2 bell curves, which means 2 concentrated distribution.
+
+Entropy threshold is that we find a threshold value that maximizes the total entropy (background and foreground) since
+the entropy represents the infomation quantities.
+
+
+
+
+Region based segmentation
+! Homogeneity
+!watershed
+There are 2 basic forms of this method, region growing and split then merge.
+Region growing  is that we start from a seed pixel in the object that we are interested in and let it grow towards the edge,
+then we recruit the neighbour pixels.
+Split and merge is that we split the image iteratively until every subpart is homogeneous, then we merge adjacent
+homogeneous subparts. This homogeneity criterion can be evaluated by the variance, entropy or co-occurence matrix
+
+The idea is to consider an image as an 2D and a half data, in which we consider the gray level as the altitude.
+Then we look at the gradient of the image, the borders of the objects correspond to the crests of the gradient surface.
+So in an image, there are multiple basins and in each basin we have a local minima, and the borders can be detected
+each time then two adjacent basins are merging, we can add a virtual dam and it's the border.
+advantage: sensitive to the borders.
+limitations: over-segmentation since there could be two many re-+gions for each local minima.
+solution: either use the pre-fiter image by using for example the median fiter or use marked watershed.
+or merge adjacent basins which have similar gray level by labeling the remaining regions after removing unwanted edges.
+Instead of starting from the minimum value, you can use a relatively high grayscale pixel as a starting point
+
+
+
+
+Morphomathematics
+1.Morphomathematical operators
+-operations on binary images
+-dualite
+-erosion,dilation,opening,closing
+-Hit or miss transform
+-squelette and remplissage ( a quoi sert une squelette?)
+-thinning and thickenning
+-distance map based
+-extraction of bord
+-labelisation ( si on voulait detecter des elements qui ne sont pas connectes)
+-exemple des ronds en cacahuete
+-where on placaitles operations morphomath dans la chaine d'acquisition?
+
+
+We can do many operations on a binary image, such as the symmetry and translation.
+
+We can define the structuring element as a set of pixels having one origin, it can be any shape like a square or a circle.
+
+
+
