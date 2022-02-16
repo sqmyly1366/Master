@@ -1,0 +1,12 @@
+addi 5,0,1
+addi 4,0,3
+addi 1,0,8
+loop: beq 4,0,end
+addi 4,4,-1
+add 5,5,5
+beq 0,0,loop
+end: beq 5,1,msb1
+addi 7,0,0
+halt
+msb1: addi 7,0,1
+halt
