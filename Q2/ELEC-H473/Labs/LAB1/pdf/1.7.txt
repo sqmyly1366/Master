@@ -1,0 +1,26 @@
+//number 1 and number 2 are stored in REG1 and REG2
+movi 1,1
+movi 2,1
+
+//number used to make "nand" operation
+movi 3,0x8000
+//number used to compare with "nand" result
+movi 4,0XFFFF
+
+//result for REG1 and REG2:
+nand 5,1,3
+nand 6,2,3
+
+//3 situations to distinct:
+//firstnumberhaszeroastheMSB
+beq 4,5,FMSB
+halt  
+//secondnumberhaszeroastheMSB
+beq 4,6,SMSB
+halt
+
+
+FMSB: add 7,1,2
+SMSB: add 7,1,2
+halt
+
