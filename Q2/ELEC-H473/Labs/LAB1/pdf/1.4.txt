@@ -1,0 +1,7 @@
+addi 5,0,1
+addi 4,0,4
+loop: beq 4,0,end
+addi 4,4,-1
+add 5,5,5
+beq 0,0,loop
+end: halt
