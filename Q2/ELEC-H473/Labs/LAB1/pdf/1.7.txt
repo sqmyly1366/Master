@@ -1,6 +1,6 @@
 //number 1 and number 2 are stored in REG1 and REG2
 movi 1,0XFFFF
-movi 2,10
+movi 2,0X8000
 
 //result
 add 3,1,2
@@ -19,13 +19,16 @@ nand 2,3,6
 // if yes, they have 1 as MSB.
 beq 4,7,one
 beq 5,7,two
-beq 2,7,three
 
-one: movi 4,1
-two: movi 4,1
 
-///问题在这里，这俩被触发了。。。。。 两个conditions的意思是必须两个都满足还是满足其中一个就行？？？
-one: three: movi 7,0  
-two: three: movi 7,0
+one: beq 2,7,three
+movi 4,1
+halt
+two: beq 2,7,three
+movi 4,1
+halt
+
+three: movi 4,0
+
 
 halt
