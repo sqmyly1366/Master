@@ -1,4 +1,0 @@
-addi 5,0,1
-addi 4,4,-1
-add 5,5,5
-halt
