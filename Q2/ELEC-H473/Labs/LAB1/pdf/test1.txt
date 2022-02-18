@@ -1,5 +1,6 @@
 movi 1,1
 movi 2,2
+<<<<<<< HEAD
 movi 3,2
 movi 4,1
 beq 1,4,one
@@ -7,4 +8,17 @@ halt
 beq 2,3,two
 halt
 one: two: movi 5,1
+=======
+movi 3,3
+movi 4,4
+
+beq 1,2,a
+beq 3,4,b
+
+a: movi 7,1
+b: movi 5,2 //:后面要加个空格
+a: b: movi 6,5
+
+movi 7,0XFFFF
+>>>>>>> 8ac617bf2712791dcc912cbce9d75d25c6aa6f6c
 halt
