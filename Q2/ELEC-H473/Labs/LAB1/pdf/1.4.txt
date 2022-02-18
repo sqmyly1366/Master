@@ -1,10 +1,18 @@
 addi 5,0,1
+<<<<<<< HEAD
 addi 4,0,16
 
+=======
+addi 4,0,4
+>>>>>>> f42737681160de3299fef77d07849674a93e08f9
 loop: beq 4,0,end
 addi 4,4,-1
 add 5,5,5
 beq 0,0,loop
+<<<<<<< HEAD
 
 end: halt
 
+=======
+end: halt
+>>>>>>> f42737681160de3299fef77d07849674a93e08f9
