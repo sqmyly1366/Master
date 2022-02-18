@@ -1,26 +1,31 @@
 //number 1 and number 2 are stored in REG1 and REG2
-movi 1,1
-movi 2,1
+movi 1,0XFFFF
+movi 2,10
 
-//number used to make "nand" operation
-movi 3,0x8000
-//number used to compare with "nand" result
-movi 4,0XFFFF
+//result
+add 3,1,2
 
-//result for REG1 and REG2:
-nand 5,1,3
-nand 6,2,3
+//number used to make "nand" operation（10000000....）
+movi 6,0x8000
+//number used to compare with "nand" result（011111111....）
+movi 7,0X7FFF
 
-//3 situations to distinct:
-//firstnumberhaszeroastheMSB
-beq 4,5,FMSB
-halt  
-//secondnumberhaszeroastheMSB
-beq 4,6,SMSB
+
+//3 MSB to detect (number1,number2,result) 变成11111 或者01111111
+nand 4,1,6
+nand 5,2,6
+nand 2,3,6
+
+// if yes, they have 1 as MSB.
+beq 4,7,one
+beq 5,7,two
+beq 2,7,three
+
+one: movi 4,1
+two: movi 4,1
+
+///问题在这里，这俩被触发了。。。。。 两个conditions的意思是必须两个都满足还是满足其中一个就行？？？
+one: three: movi 7,0  
+two: three: movi 7,0
+
 halt
-
-
-FMSB: add 7,1,2
-SMSB: add 7,1,2
-halt
-
