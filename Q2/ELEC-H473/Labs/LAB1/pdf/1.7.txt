@@ -19,6 +19,7 @@ nand 2,3,6
 // if yes, they have 1 as MSB.
 beq 4,7,one
 beq 5,7,two
+halt
 
 
 one: beq 2,7,three
@@ -27,8 +28,6 @@ halt
 two: beq 2,7,three
 movi 4,1
 halt
-
 three: movi 4,0
-
-
 halt
+

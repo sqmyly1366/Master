@@ -1,0 +1,17 @@
+ELEC-H473 microprocesser architecture
+noting
+
+INFO-F422 Statistical foundations of machine learning
+2 lectures ( pas tres importantes)
+
+INFO-F424 Combinatorial optimization
+1 lecture+ 1 TP
+
+INFO-H410 Techniques of artificial intelligence
+1 TP
+
+INFO-H414 Swarm Intelligence
+2 lectures
+
+INFO-H422 Theory of information coding computing and complexity
+2 lectures
