@@ -1,0 +1,39 @@
+movi	1,1
+sw	1,0,1
+movi  	2,8
+sw	2,0,2
+
+//number used to make "nand" operation（10000000....）
+movi	6,0x8000
+sw	6,0,6
+//number used to compare with "nand" result（011111111....）
+movi	7,0X7FFF
+sw	7,0,7
+
+movi	4,15
+sw	4,0,4
+
+loop:	beq 	2,0,endloop
+	
+	//Detect MSB of 2 after each leftshift
+	nand	5,2,6
+	//if yes, we have 1 as the MSB
+	beq	5,7,one
+	endone:		lw 4,0,4
+	addi	4,4,-1
+	sw	4,0,4
+
+	add	1,1,1
+
+	//左移第二个数直到每个bit都被扫描完
+	add	2,2,2
+	beq	0,0,loop
+
+endloop:	halt
+
+one:	beq	4,0,endone
+	
+	add	3,1,1
+	
+	addi	4,4,-1
+	beq	0,0,one

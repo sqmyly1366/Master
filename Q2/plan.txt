@@ -8,10 +8,10 @@ INFO-F424 Combinatorial optimization
 1 lecture+ 1 TP
 
 INFO-H410 Techniques of artificial intelligence
-1 TP
+nothing
 
 INFO-H414 Swarm Intelligence
 2 lectures
 
 INFO-H422 Theory of information coding computing and complexity
-2 lectures
+3 lectures

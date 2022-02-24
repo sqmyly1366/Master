@@ -1,0 +1,13 @@
+Chapter1.
+-Problem of the water jugs:
+-Search Space: the set of all possible reachable from the initial state.
+-Breadth first search: 
+ exemple: Eight puzzle problem
+-Depth first search: follow a path until reaching a dead end, back up and try last encountered alternative.
+
+
+Chatper2.
+-A*= search, Genetic Algorithm= optimisation, Q-learning= learning
+exemple: Snack and Tetris(俄罗斯方块)
+-Dijkstra or A*,GA,ACO used to discover the shortest path
+-NN or DL for distinguishing a cat from a dog

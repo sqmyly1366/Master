@@ -1,0 +1,16 @@
+movi 1,1
+movi 2,32768
+sw 1,0,1
+
+loop: 	beq	2,0,end
+
+	add	3,3,1	
+	lw	1,0,1
+	
+
+
+	addi	2,2,-1
+	beq	0,0,loop
+
+
+end:	halt
