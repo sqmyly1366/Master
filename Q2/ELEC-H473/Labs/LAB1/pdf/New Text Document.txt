@@ -1,0 +1,10 @@
+movi 1,1
+movi 2,2
+
+loop:	beq 1,2,end
+	
+	addi 2,2,-1
+	
+	beq 0,0,loop
+
+end:	halt

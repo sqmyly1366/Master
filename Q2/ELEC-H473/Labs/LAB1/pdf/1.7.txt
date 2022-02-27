@@ -1,6 +1,6 @@
 //number 1 and number 2 are stored in REG1 and REG2
-movi 1,0XFFFF
-movi 2,0X8000
+//movi 1,0XFFFF
+//movi 2,0X8000
 
 //result
 add 3,1,2

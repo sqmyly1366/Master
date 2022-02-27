@@ -1,0 +1,30 @@
+//movi 1,0XFFFF
+//movi 2,0X8000
+add 3,1,2
+movi 5,0x8000
+movi 6,0X7FFF
+nand 7,1,5
+sw 7,0,0
+nand 7,2,5
+sw 7,0,1
+nand 7,3,5
+sw 7,0,2
+lw 7,0,0
+beq 7,6,one
+lw 7,0,1
+beq 7,6,two
+halt
+
+
+
+
+one: lw 7,0,2
+beq 7,6,three
+movi 4,1
+halt
+two: lw 7,0,2
+beq 7,6,three
+movi 4,1
+halt
+three: movi 4,0
+halt

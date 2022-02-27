@@ -1,0 +1,153 @@
+movi 1,0x001f
+movi 2,0x001f
+sw 1,0,0 // number1
+sw 2,0,1 // number2
+
+
+
+movi 3,0x8000
+sw 3,0,2 // mask
+movi 3,0x7FFF
+sw 3,0,3 // comparator
+
+
+
+movi 3,15
+sw 3,0,4 //max times can be left shifted symplified name : MLS
+
+
+
+
+lw 2,0,1 //R2 STORE num2
+lw 3,0,2 //R3 STORE mask
+lw 4,0,3 //R4 STORE comparator
+
+
+
+
+scan: beq 2,0,end //scan number 2 from MSB to LSB , loop END AT LSB left shift to MSB
+nand 1,2,3 // MASK operation for number 2
+beq 1,4,one //one : when current MSB is 1, number 1 left shift MLS bit
+beq 2,3,end // in order to reduce loop complexity ,if number 2 is equal to 0x8000 stop scan
+add 2,2,2 // number2 left shift 1 bit
+lw 1,0,4
+addi 1,1,-1 // MLS -- current position of scan
+sw 1,0,4
+beq 0,0,scan
+
+end: lw 4,0,10
+lw 3,0,11
+halt
+
+
+
+
+one: lw 7,0,4 // MLS
+lw 1,0,0 // number1
+sw 1,0,6 // initial shift operation low 16bit
+lw 1,0,15
+sw 1,0,5 // initial shift operation high 16bit
+
+
+
+shif: beq 7,0,ends // number 1 left shift MLS bit
+
+
+
+lw 1,0,5 // R1 store shifted number 1 ,high 16 bit
+add 1,1,1 // first step shift high 16bit
+sw 1,0,5
+lw 1,0,6 // R1 store shifted number 1: low 16 bit
+nand 5,1,3 // extract shifted number1 low 16bit MSB
+movi 4,0xFFFF // in order to reduce code repeat ， change mask MSB equal to 1:0XFFFF
+beq 5,4,msb0 //MSB0: MSB is equal to 0
+lw 1,0,5 // R1 store shifted number 1: high 16 bit
+addi 1,1,1
+sw 1,0,5
+msb0: lw 1,0,6 // R1 store shifted number 1: low 16 bit
+add 1,1,1 // second step shift low 16bit
+sw 1,0,6
+lw 4,0,3 // change mask value back to 0x7fff
+
+
+
+addi 7,7,-1
+beq 0,0,shif
+
+
+
+
+ends: lw 1,0,5 //current shifted number 1 high 16 bit
+lw 5,0,10 //privous shifted number 1 low 16 bit
+add 7,1,5 //first do high 16 bit addition
+sw 7,0,10
+lw 1,0,6 // current shifted number 1 low 16 bit
+lw 5,0,11 // previous shifted number 1 low 16 bit
+add 7,1,5
+
+
+
+
+// judge if saturation
+//lw 2,0,1 //R2 STORE num2
+//lw 3,0,2 //R3 STORE mask
+//lw 4,0,3 //R4 STORE comparator
+
+
+
+nand 6,1,3 // do mask operation for current number 1
+sw 6,0,7
+nand 6,5,3 // do mask operation for previous number 1
+sw 6,0,8
+nand 6,7,3 // do mask operation for addition result
+sw 6,0,9
+
+
+
+//lw 4,0,3 //R4 STORE comparator
+
+
+
+lw 6,0,7
+beq 6,4,msb1
+lw 6,0,8
+beq 6,4,msb2
+
+sw 7,0,11 // no saturation , store add result to memory data
+// memory data address 10 store high 16bit , address 11 store low 16 bit
+movi 1,21
+jalr 7,1 // jump back to SCAN LOOP
+
+
+
+msb1: lw 6,0,8
+beq 6,4,sat // double1 sat : saturation
+lw 6,0,9 // R6 store addition result
+movi 4,0xFFFF // in order to reduce code repeat ， change mask MSB equal to 1
+beq 6,4,sat //if the MSB of (addition result) is equlal to 0 ,saturation
+sw 7,0,11 // no saturation， store add result to low 16 bit memory data
+lw 4,0,3 // change mask value back to 0x7fff
+movi 1,21
+jalr 7,1 // jump back to SCAN LOOP
+
+
+
+msb2: lw 6,0,7
+beq 6,4,sat // double1 sat : saturation
+lw 6,0,9 // R6 store addition result
+movi 4,0xFFFF // in order to reduce code repeat ， change mask MSB equal to 1
+beq 6,4,sat //if the MSB of (addition result) is equlal to 0 ,saturation
+sw 7,0,11 // no saturation， store add result to low 16 bit memory data
+lw 4,0,3 // change mask value back to 0x7fff
+movi 1,21
+jalr 7,1 // jump back to SCAN LOOP
+
+
+
+sat: lw 6,0,10 // R6 get high 16 bit result from memory data
+addi 6,6,1 // if saturation high 16 bit ++
+sw 6,0,10
+sw 7,0,11
+lw 4,0,3 // change mask value back to 0x7fff
+movi 1,21
+jalr 7,1 // jump back to SCAN LOOP

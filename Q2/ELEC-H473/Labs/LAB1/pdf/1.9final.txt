@@ -1,0 +1,55 @@
+movi 1,15
+sw 1,0,0 // number1
+movi 2,16
+sw 2,0,1 // number2
+
+movi 1,0x8000
+sw 1,0,2 // mask
+movi 1,0x7FFF
+sw 1,0,3 // comparator
+
+movi 1,15
+sw 1,0,4 //max times can be left shifted 
+
+
+lw 2,0,1 //num2
+lw 3,0,2 //mask
+lw 4,0,3 //comparator
+
+
+scannumtwo:	beq 2,0,endscan
+		nand 1,2,3
+		
+
+		beq 1,4,one //when i read 1 as MSB,第二十行
+
+		lw 1,0,4
+		addi 1,1,-1
+		sw 1,0,4
+
+	
+
+		add 2,2,2
+		beq 0,0,scannumtwo
+endscan: halt
+
+
+
+
+one:	lw    7,0,4
+	lw    1,0,0
+
+jiafa:	beq 7,0,enda
+	
+	add 1,1,1
+	
+	addi 7,7,-1
+	beq 0,0,jiafa
+
+	
+enda: lw 5,0,5
+add 5,1,5
+sw 5,0,5
+
+movi 1,20
+jalr 7,1
