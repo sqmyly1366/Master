@@ -6,6 +6,9 @@ Chapter1.
 -Depth first search: follow a path until reaching a dead end, back up and try last encountered alternative.
 
 
+-Best First: choose in each time the smallest cost node.
+-Depth first: 沿着一个方向一直找，直到走不了，回到上一个节点。
+-Breath first: 四个方向都找。
 Chatper2.
 -Dijkstra
 -A*
