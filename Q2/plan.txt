@@ -1,10 +1,10 @@
 ELEC-H473 microprocesser architecture
 lectures
 
-INFO-F422 Statistical foundations of machine learning
+INFO-F422 Statistical foundations of machine learning：（TP在linux上运行，project还没开始）
 3 lectures ( pas tres importantes)+1TP
 
-INFO-F424 Combinatorial optimization
+INFO-F424 Combinatorial optimization 
 2 lecture+ 1 TP
 
 INFO-H410 Techniques of artificial intelligence
