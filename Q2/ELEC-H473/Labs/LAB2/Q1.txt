@@ -1,0 +1,16 @@
+//The first bit is used to distinct the sign, 0 is positif and 1 is negatif.
+
+movi 1,0X7FFF //MAX positif =32767        =01111111111
+movi 2,1             // min positif                       =00000000001
+movi 3,0XFFFF  //min Negatif =-1             =11111111111
+movi 4,0X8000 //max negatif =-32768     =10000000000
+
+bg 1,2,1
+addi 5,0,1   //this will be skipped
+bg 2,3,1
+addi 5,0,2   //this will be skipped
+bg 3,4,1
+addi 5,0,3   //this will be skipped
+bg 3,1,1
+addi 5,0,4   //this wont be skipped since 0XFFFF is not greater than  0X7FFF, it would be if it's a unsigned case, while here the first bit is used to represent the sign.
+addi 5,0,5
