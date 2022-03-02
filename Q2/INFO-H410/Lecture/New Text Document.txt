@@ -7,7 +7,10 @@ Chapter1.
 
 
 Chatper2.
--A*= search, Genetic Algorithm= optimisation, Q-learning= learning
-exemple: Snack and Tetris(俄罗斯方块)
--Dijkstra or A*,GA,ACO used to discover the shortest path
--NN or DL for distinguishing a cat from a dog
+-Dijkstra
+-A*
+-Genetic Algorithm
+-Ant colony optimization Algorithm
+-Q-learning
+-Nearest Neighbor 
+-Deep learning
