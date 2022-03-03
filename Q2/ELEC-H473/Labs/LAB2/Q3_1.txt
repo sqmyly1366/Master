@@ -1,0 +1,22 @@
+//把第二个数分解了进loop, 2^0+2^1+..... 如果LSB=1,就把一个数向左移0位,1位,最后相加
+
+Movi 1,1  //Number 1
+sw 1,0,1
+Movi 2,1  //Number 2
+sw 2,0,2
+
+Movi 7,0,1 
+sw 7,0,3    //  Mask used to determine the LSB  000001
+Movi 7,0,4
+sw 7,0,4   //  Comparator used to determine the LSB   111110
+
+
+loop: 	beq	2,0,end
+	
+AND 1,2,3
+
+
+	beq	0,0,loop
+
+
+end:	halt

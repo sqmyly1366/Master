@@ -1,0 +1,6 @@
+movi 1,0x8000
+movi 2,0x8000
+add 1,1,2,overf
+halt
+overf: movi 3,2
+halt
