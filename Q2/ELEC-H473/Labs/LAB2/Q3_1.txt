@@ -1,22 +1,56 @@
 //把第二个数分解了进loop, 2^0+2^1+..... 如果LSB=1,就把一个数向左移0位,1位,最后相加
 
-Movi 1,1  //Number 1
-sw 1,0,1
-Movi 2,1  //Number 2
-sw 2,0,2
+Movi 1,0X6000 //Number 1
+//sw 1,0,1
+Movi 2,0X54  //Number 2
+//sw 2,0,2
 
-Movi 7,0,1 
-sw 7,0,3    //  Mask used to determine the LSB  000001
-Movi 7,0,4
-sw 7,0,4   //  Comparator used to determine the LSB   111110
+Movi 7,1
+sw 7,0,0    //  Mask used to determine the LSB  000001
 
+Movi 7,1
+sw 7,0,3    //initialization for LSB of R4
+
+Movi 7,0
+sw 7,0,4   //initialization of time of left shift
 
 loop: 	beq	2,0,end
+	//init
+	lw 7,0,0
+	//determine the lsb
+	nand	6,2,7
+	nand	6,6,6
+	beq	6,7,jia
+	// What we need to do in the end of each loop
+	addi	5,5,1  //exposant
+	lw	4,0,3
+	shifti	4,4,1  //不管有没有overf,R4左移一位
+	sw	4,0,3
 	
-AND 1,2,3
+	lw	7,0,5
+	lw	6,0,0
+	sha	7,7,6,on//不能跳太远
 
+	shifti	2,2,-1
 
 	beq	0,0,loop
 
 
+
+on:	lw	4,0,3
+	addi	4,4,1
+	
+	movi	7,25
+	jalr	6,7
+
+
+jia:	sha	7,1,5 //对第一个数进行左移
+	sw	7,0,5
+	add	3,3,7,-6
+	//跳回去
+	movi	7,18
+	jalr	6,7
+
 end:	halt
+
+	

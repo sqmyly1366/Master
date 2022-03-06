@@ -1,3 +1,8 @@
-Movi 1,2
-Movi  2,3
-MUL 4,1,2
+Movi 1,0X6800
+movi 2,1
+sha 1,1,2,one
+sha 1,1,2,two
+halt
+one: movi 6,1
+two: movi 7,1
+halt
