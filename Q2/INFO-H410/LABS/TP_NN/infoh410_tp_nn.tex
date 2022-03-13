@@ -1,0 +1,281 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsthm} %numéroter les questions
+\usepackage[english]{babel}
+\usepackage{datetime}
+\usepackage{xspace} % typographie IN
+\usepackage{hyperref}% hyperliens
+\usepackage[all]{hypcap} %lien pointe en haut des figures
+%\usepackage[french]{varioref} %voir x p y
+
+\usepackage{fancyhdr}% en têtes
+\usepackage{graphicx} %include pictures
+\usepackage{pgfplots}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{babel}
+\usepackage{circuitikz}
+% \usepackage{gnuplottex}
+\usepackage{float}
+\usepackage{ifthen}
+
+\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry}
+\usepackage[]{pdfpages}
+\usepackage[]{attachfile}
+
+\usepackage{amsmath}
+\usepackage{enumitem}
+\setlist[enumerate]{label=\alph*)}% If you want only the x-th level to use this format, use '[enumerate,x]'
+\usepackage{multirow}
+
+\usepackage{aeguill} %guillemets
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% READ THIS BEFORE CHANGING ANYTHING
+%
+%
+% - TP number: can be changed using the command
+%		\def \tpnumber {TP 1 }
+%
+% - Version: controlled by a new command:
+%		\newcommand{\version}{v1.0.0}
+%
+% - Booleans: there are three booleans used in this document:
+%	- 'corrige', controlled by defining the variable 'corrige'
+% You can define those variables in a makefile using such a command:
+% pdflatex -shell-escape -jobname="infoh410_tp1" "\def\corrige{} \input{infoh410_tp1.tex}"
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Numero du TP :
+\def \tpnumber {TP NN (Neural Networks) }
+
+\newcommand{\version}{v1.0.0}
+
+
+% ########     #####      #####    ##         #########     ###     ##      ##  
+% ##     ##  ##     ##  ##     ##  ##         ##           ## ##    ###     ##  
+% ##     ##  ##     ##  ##     ##  ##         ##          ##   ##   ## ##   ##  
+% ########   ##     ##  ##     ##  ##         ######     ##     ##  ##  ##  ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         #########  ##   ## ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         ##     ##  ##     ###  
+% ########     #####      #####    #########  #########  ##     ##  ##      ##  
+\newboolean{corrige}
+\ifx\correction\undefined
+\setboolean{corrige}{false}% pas de corrigé
+\else
+\setboolean{corrige}{true}%corrigé
+\fi
+% \setboolean{corrige}{true}% pas de corrigé
+
+
+\definecolor{darkblue}{rgb}{0,0,0.5}
+
+\pdfinfo{
+/Author (ULB -- CoDe/IRIDIA)
+/Title (\tpnumber, INFO-H-410)
+/ModDate (D:\pdfdate)
+}
+
+\hypersetup{
+pdftitle={\tpnumber [INFO-H-410] Techniques of AI},
+pdfauthor={ULB -- CoDe/IRIDIA},
+pdfsubject={}
+}
+
+\theoremstyle{definition}% questions pas en italique
+\newtheorem{Q}{Question}[] % numéroter les questions [section] ou non []
+
+
+%  ######     #####    ##       ##  ##       ##     ###     ##      ##  ######      #######   
+% ##     ##  ##     ##  ###     ###  ###     ###    ## ##    ###     ##  ##    ##   ##     ##  
+% ##         ##     ##  ## ## ## ##  ## ## ## ##   ##   ##   ## ##   ##  ##     ##  ##         
+% ##         ##     ##  ##  ###  ##  ##  ###  ##  ##     ##  ##  ##  ##  ##     ##   #######   
+% ##         ##     ##  ##       ##  ##       ##  #########  ##   ## ##  ##     ##         ##  
+% ##     ##  ##     ##  ##       ##  ##       ##  ##     ##  ##     ###  ##    ##   ##     ##  
+%  #######     #####    ##       ##  ##       ##  ##     ##  ##      ##  ######      #######   
+\newcommand{\reponse}[1]{% pour intégrer une réponse : \reponse{texte} : sera inclus si \boolean{corrige}
+\ifthenelse {\boolean{corrige}} {\paragraph{Answer:} \color{darkblue}   #1\color{black}} {}
+}
+
+\newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
+
+
+%  #######   ##########  ##    ##   ##         #########  
+% ##     ##      ##       ##  ##    ##         ##         
+% ##             ##        ####     ##         ##         
+%  #######       ##         ##      ##         ######     
+%        ##      ##         ##      ##         ##         
+% ##     ##      ##         ##      ##         ##         
+%  #######       ##         ##      #########  #########  
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[INFO-H-410] Techniques of AI\\ \tpnumber}
+\rhead{\version\\ page \thepage}
+\chead{\ifthenelse{\boolean{corrige}}{Correction}{}}
+%%
+
+\setlength{\parskip}{0.2cm plus2mm minus1mm} %espacement entre §
+\setlength{\parindent}{0pt}
+
+% ##########  ########   ##########  ##         #########  
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ######     
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##      ########       ##      #########  ######### 
+\date{\vspace{-1.7cm}\version}
+\title{\vspace{-2cm} \tpnumber \\ Techniques of AI [INFO-H-410] \ifthenelse{\boolean{corrige}}{~\\Correction}{}}
+
+
+\begin{document}
+\selectlanguage{english}
+
+\maketitle
+
+\fbox{
+    \parbox{\textwidth}{
+    \label{source}
+\footnotesize{
+Source files, code templates and corrections related to practical sessions can be found on the UV 
+or on github (\url{https://github.com/iridia-ulb/INFOH410}).
+}}}
+
+\paragraph{Feed forward neural network}
+\begin{Q}
+Consider the following fully connected feed forward NN:
+% Input layer neurons'number
+\newcommand{\inputnum}{2} 
+% Hidden layer neurons'number
+\newcommand{\hiddennum}{2}  
+% Output layer neurons'number
+\newcommand{\outputnum}{1} 
+\newcounter{weight}
+\stepcounter{weight}
+\begin{center}
+\begin{tikzpicture}
+% Input Layer
+\foreach \i in {1,...,\inputnum}
+{
+    \node[circle, 
+        minimum size = 10mm,
+        fill=orange!30] (Input-\i) at (0,-\i) {};
+}
+% Hidden Layer
+\foreach \i in {1,...,\hiddennum}
+{
+    \node[circle, 
+        minimum size = 10mm,
+        fill=teal!50,
+        yshift=(\hiddennum-\inputnum)*5 mm]
+        (Hidden-\i) at (3,-\i) {};
+}
+% Output Layer
+\foreach \i in {1,...,\outputnum}
+{
+    \node[circle, 
+        minimum size = 10mm,
+        fill=purple!50,
+        yshift=(\outputnum-\inputnum)*5 mm]
+        (Output-\i) at (6,-\i) {};
+}
+% Connect neurons In-Hidden
+\foreach \i in {1,...,\inputnum}
+{
+    \foreach \j in {1,...,\hiddennum}
+    {
+        \draw[->, shorten >=1pt] (Input-\i) -- node[above,scale=0.7,pos=0.2]{$w_\theweight$} (Hidden-\j);	
+        \stepcounter{weight}
+    }
+}
+% Connect neurons Hidden-Out
+\foreach \i in {1,...,\hiddennum}
+{
+    \foreach \j in {1,...,\outputnum}
+    {
+        \draw[->, shorten >=1pt] (Hidden-\i) -- node[above,scale=0.7,pos=0.3]{$w_\theweight$} (Output-\j);
+        \stepcounter{weight}
+    }
+}
+% Inputs
+\foreach \i in {1,...,\inputnum}
+{
+    \draw[<-, shorten <=1pt] (Input-\i) -- ++(-1,0) node[left]{$x_{\i}$};
+}
+% Outputs
+\foreach \i in {1,...,\outputnum}
+{            
+    \draw[->, shorten <=1pt] (Output-\i) -- ++(1,0) node[right]{$y_{\i}$};
+}
+\end{tikzpicture}
+\end{center}
+\begin{enumerate}
+    \item Give the equation for the output value of the network, given the network is linear.
+    \item Show that the output equation of the perceptron is the same as the one of the neural net shown above.
+    \item Now add an activation function $f$ to each neuron and rewrite the first equation.
+    \item Using the following inputs and weights, compute the output of the network using the sigmoid activation
+        function first, and then the ReLU activation function.
+
+    \begin{center}
+    \begin{tabular}{|l|l|l|l|l|l|l|l|}
+    \hline
+    \multicolumn{2}{|l|}{inputs} & \multicolumn{6}{l|}{weights}                  \\ \hline
+    $x_1$         & $x_2$        & $w_1$ & $w_2$ & $w_3$ & $w_4$ & $w_5$ & $w_6$ \\ \hline
+    $1$           & $1.5$        & $1$   & $2$   & $3$   & $2$   & $1$   & $3$   \\ \hline
+    \end{tabular}
+    \end{center}
+
+\end{enumerate}
+
+\reponse{
+
+\begin{enumerate}
+    \item $$y_1 = w_5 ( x_1 w_1 + x_2 w_3 ) + w_6 ( x_1 w_2 + x_2 w_4 )$$
+        $$y1 = x_1 w_5 w_1 + x_2 w_5 w_3 + x_1 w_6 w_2 + x_2 w_6 w_4$$
+        $$y1 = x_1 (w_5 w_1 + w_6 w_2) + x_2 (w_5 w_3 + w_6 w_4)  $$
+    \item This shows that a perceptron with two inputs $x_1$ an $x_2$ and weights 
+        $(w_5 w_1 + w_6 w_2)$ and $(w_5 w_3 + w_6 w_4)$ has the same output function.
+    \item $$y_1 = f(w_5 ( f(x_1 w_1 + x_2 w_3 )) + w_6 ( f(x_1 w_2 + x_2 w_4 )))$$
+    \item if f = sigmoid, $y1 = 0.98$, if f = ReLU, $y1 = 20.5$
+
+\end{enumerate}
+
+}
+
+\end{Q}
+
+\begin{Q}
+    We will now implement, create, and train a 4 layer fully connected feed forward neural network
+    to solve a classification problem.
+    The dataset for this problem will be generated automatically by the \verb!create_dataset! function
+    in \verb!utils.py!
+    \begin{enumerate}
+        \item Using the provided templates, implement a simple neural network.
+            Start by filling the \verb!nn_template.py! to implement the forward pass,
+            the backpropagation, and the training function.
+        \item Train your network using the automatically generated dataset, use the template \verb!ex2_template.py!
+        \item Observe the effect when changing some of the hyperparameters 
+    \end{enumerate}
+    \reponse{
+        see github for implementation
+    }
+\end{Q}
+
+\begin{Q}
+    Use tensorflow with keras to instanciate, train and test the same network as in the
+    previous question (use \verb!ex3_template.py!).
+
+    \reponse{
+        see github for implementation
+    }
+\end{Q}
+
+\noindent
+\rule{\textwidth}{0.4pt}
+\footnotesize{Found an error? Let us know: \url{https://github.com/iridia-ulb/INFOH410/issues}}
+
+\end{document} 

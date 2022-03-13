@@ -1,0 +1,560 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsthm} %numéroter les questions
+\usepackage[english]{babel}
+\usepackage{datetime}
+\usepackage{xspace} % typographie IN
+\usepackage{hyperref}% hyperliens
+\usepackage[all]{hypcap} %lien pointe en haut des figures
+
+\usepackage{fancyhdr}% en têtes
+\usepackage{graphicx} %include pictures
+\usepackage{pgfplots}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{babel}
+\usepackage{circuitikz}
+% \usepackage{gnuplottex}
+\usepackage{float}
+\usepackage{ifthen}
+
+\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry}
+\usepackage[]{pdfpages}
+\usepackage[]{attachfile}
+
+\usepackage{amsmath}
+\usepackage{enumitem}
+\setlist[enumerate]{label=\alph*)}% If you want only the x-th level to use this format, use '[enumerate,x]'
+\usepackage{multirow}
+
+\usepackage{chessboard}
+\storechessboardstyle{4x4}{maxfield=d4}
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+% Algorithms
+%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode} % From algorithmicx
+
+%%%%%%%%%%%%
+% Vertical line trick in algorithms, https://tex.stackexchange.com/questions/292815/how-can-i-create-vertical-lines-indentation-in-algorithm-pseudo-code-correctly-w/292838#292838
+\makeatletter
+% start with some helper code
+% This is the vertical rule that is inserted
+\newcommand*{\algrule}[1][\algorithmicindent]{%
+  \makebox[#1][l]{%
+    \hspace*{.2em}% <------------- This is where the rule starts from
+    \color{black!10}\vrule height .75\baselineskip depth .25\baselineskip
+  }
+}
+
+\newcount\ALG@printindent@tempcnta
+\def\ALG@printindent{%
+    \ifnum \theALG@nested>0% is there anything to print
+    \ifx\ALG@text\ALG@x@notext% is this an end group without any text?
+    % do nothing
+    \else
+    \unskip
+    % draw a rule for each indent level
+    \ALG@printindent@tempcnta=1
+    \loop
+    \algrule[\csname ALG@ind@\the\ALG@printindent@tempcnta\endcsname]%
+    \advance \ALG@printindent@tempcnta 1
+    \ifnum \ALG@printindent@tempcnta<\numexpr\theALG@nested+1\relax
+    \repeat
+    \fi
+    \fi
+}
+% the following line injects our new indent handling code in place of the default spacing
+\patchcmd{\ALG@doentity}{\noindent\hskip\ALG@tlm}{\ALG@printindent}{}{\errmessage{failed to patch}}
+\patchcmd{\ALG@doentity}{\item[]\nointerlineskip}{}{}{} % no spurious vertical space
+% end vertical rule patch for algorithmicx
+\makeatother
+%
+%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% READ THIS BEFORE CHANGING ANYTHING
+%
+%
+% - TP number: can be changed using the command
+%		\def \tpnumber {TP 1 }
+%
+% - Version: controlled by a new command:
+%		\newcommand{\version}{v1.0.0}
+%
+% - Booleans: there are three booleans used in this document:
+%	- 'corrige', controlled by defining the variable 'corrige'
+% You can define those variables in a makefile using such a command:
+% pdflatex -shell-escape -jobname="infoh410_tp1" "\def\corrige{} \input{infoh410_tp1.tex}"
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Numero du TP :
+\def \tpnumber {TP LSMM (Local Search and Min-Max algorithm) }
+
+\newcommand{\version}{v1.0.0}
+
+
+% ########     #####      #####    ##         #########     ###     ##      ##  
+% ##     ##  ##     ##  ##     ##  ##         ##           ## ##    ###     ##  
+% ##     ##  ##     ##  ##     ##  ##         ##          ##   ##   ## ##   ##  
+% ########   ##     ##  ##     ##  ##         ######     ##     ##  ##  ##  ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         #########  ##   ## ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         ##     ##  ##     ###  
+% ########     #####      #####    #########  #########  ##     ##  ##      ##  
+\newboolean{corrige}
+\ifx\correction\undefined
+\setboolean{corrige}{false}% pas de corrigé
+\else
+\setboolean{corrige}{true}%corrigé
+\fi
+% \setboolean{corrige}{true}% pas de corrigé
+
+
+\definecolor{darkblue}{rgb}{0,0,0.5}
+
+\pdfinfo{
+/Author (ULB -- CoDe/IRIDIA)
+/Title (\tpnumber, INFO-H-410)
+/ModDate (D:\pdfdate)
+}
+
+\hypersetup{
+pdftitle={\tpnumber [INFO-H-410] Techniques of AI},
+pdfauthor={ULB -- CoDe/IRIDIA},
+pdfsubject={}
+}
+
+\theoremstyle{definition}% questions pas en italique
+\newtheorem{Q}{Question}[] % numéroter les questions [section] ou non []
+
+
+%  ######     #####    ##       ##  ##       ##     ###     ##      ##  ######      #######   
+% ##     ##  ##     ##  ###     ###  ###     ###    ## ##    ###     ##  ##    ##   ##     ##  
+% ##         ##     ##  ## ## ## ##  ## ## ## ##   ##   ##   ## ##   ##  ##     ##  ##         
+% ##         ##     ##  ##  ###  ##  ##  ###  ##  ##     ##  ##  ##  ##  ##     ##   #######   
+% ##         ##     ##  ##       ##  ##       ##  #########  ##   ## ##  ##     ##         ##  
+% ##     ##  ##     ##  ##       ##  ##       ##  ##     ##  ##     ###  ##    ##   ##     ##  
+%  #######     #####    ##       ##  ##       ##  ##     ##  ##      ##  ######      #######   
+\newcommand{\reponse}[1]{% pour intégrer une réponse : \reponse{texte} : sera inclus si \boolean{corrige}
+\ifthenelse {\boolean{corrige}} {\paragraph{Answer:} \color{darkblue}   #1\color{black}} {}
+}
+
+\newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
+
+
+%  #######   ##########  ##    ##   ##         #########  
+% ##     ##      ##       ##  ##    ##         ##         
+% ##             ##        ####     ##         ##         
+%  #######       ##         ##      ##         ######     
+%        ##      ##         ##      ##         ##         
+% ##     ##      ##         ##      ##         ##         
+%  #######       ##         ##      #########  #########  
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[INFO-H-410] Techniques of AI\\ \tpnumber}
+\rhead{\version\\ page \thepage}
+\chead{\ifthenelse{\boolean{corrige}}{Correction}{}}
+%%
+
+\setlength{\parskip}{0.2cm plus2mm minus1mm} %espacement entre §
+\setlength{\parindent}{0pt}
+
+% ##########  ########   ##########  ##         #########  
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ######     
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##      ########       ##      #########  ######### 
+\date{\vspace{-1.7cm}\version}
+\title{\vspace{-2cm} \tpnumber \\ Techniques of AI [INFO-H-410] \ifthenelse{\boolean{corrige}}{~\\Correction}{}}
+
+
+\begin{document}
+\selectlanguage{english}
+
+\maketitle
+
+\fbox{
+    \parbox{\textwidth}{
+    \label{source}
+\footnotesize{
+Source files, code templates and corrections related to practical sessions can be found on the UV 
+or on github (\url{https://github.com/iridia-ulb/INFOH410}).
+}}}
+
+\paragraph{Hill Climbing}
+\begin{Q}
+We want to solve the $N$-queens problem. Suppose you want to place $N$ queens of a  $N\times N$ 
+chess board so that no queen can attack another queen.
+
+\chessboard[style=4x4,setblack={Qa4,Qb3,Qc4,Qd3},showmover=false]%&
+\chessboard[style=4x4,setblack={Qa4,Qb3,Qc4,Qd2},showmover=false]%&
+\chessboard[style=4x4,setblack={Qa4,Qb1,Qc4,Qd2},showmover=false]%&
+\chessboard[style=4x4,setblack={Qa3,Qb1,Qc4,Qd2},showmover=false] \\
+
+\begin{enumerate}
+    \item What would be a good heuristic for this problem ? Calculate this heuristic for each of the above board.
+    \item How many board arrangments are there ?
+    \item What would be a good state representation for this puzzle ? 
+    \item Given a clever state representation, how many board arrangments are there ?
+ \end{enumerate}
+\reponse{
+    (a) The number of pairs of attacking queens, h = 5, h = 3, h = 1, h = 0.\\
+    (b) There are 16 squares, $16 * 15 * 14 * 13 = 43680$.\\
+    (c) 4 digits, one digit represents the vertical position of a given queen on a row, using this
+    state representation, already skrinks the space of solution since no 2 queens can be in the same
+    column. With this state representation, the first board is <0,1,0,1>, the second <0,1,0,2>, the third
+    <0,3,0,2>.\\
+    (d) If we say that we only want the permutations of 4 different digits from 0 to N (that
+    way we already discard any position where 2 queens are in the same row or column) then there
+    are $N! = 24$ arrangments.
+
+}
+\end{Q}
+
+\begin{Q}
+    Implement exhaustive search in python (you can use the template (see page~\pageref{source})) for the aforementioned puzzle.
+\reponse{
+    see github for implementation
+}
+\end{Q}
+
+
+\begin{Q}
+Implement (stochastic) Hill Climbing local search in python for this puzzle. Now compare your results with 
+exhaustive search, what happens if N = 10, 15, 20 ? Why ?
+\reponse{
+    see github for implementation, exhaustive cannot work with N=12, because the search space is
+    too big ($N!$), whereas hill climbing works because the smaller neighborhood makes the branching
+    factor acceptable.
+}
+\end{Q}
+
+
+\paragraph{The Minimax algorithm}
+
+\begin{Q}
+    Perform the minimax algorithm on the following tree, first without and then with $\alpha \beta$-pruning.
+\begin{center}
+\begin{tikzpicture}[scale=1.5,font=\footnotesize]
+\tikzstyle{solid node}=[circle,draw,inner sep=1.5,fill=black]
+\tikzstyle{hollow node}=[circle,draw,inner sep=1.5]
+\tikzstyle{level 1}=[level distance=10mm,sibling distance=4.5cm]
+\tikzstyle{level 2}=[level distance=10mm,sibling distance=1.5cm]
+\tikzstyle{level 3}=[level distance=10mm,sibling distance=0.7cm]
+\tikzstyle{level 4}=[level distance=10mm,sibling distance=0.3cm]
+\node(0)[solid node,label=left:{MAX}]{}
+child{node[hollow node,label=left:{MIN}]{}
+child{node[solid node,label=left:{MAX}]{}
+    child{node[hollow node,label=left:{MIN}]{} 
+        child{node[solid node,label=below:{4}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{3}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{5}]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{}]{}
+        child{node[solid node,label=below:{2}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{1}]{} edge from parent node[left]{}}
+    }
+}
+child{node[solid node]{}{}
+    child{node[hollow node,label=left:{}]{} 
+        child{node[solid node,label=below:{4}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{2}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{3}]{} edge from parent node[left]{}}
+    }
+}
+child{node[solid node]{}
+    child{node[hollow node,label=left:{}]{} 
+        child{node[solid node,label=below:{5}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{4}]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{}]{} 
+        child{node[solid node,label=below:{7}]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{}]{}
+        child{node[solid node,label=below:{3}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{2}]{} edge from parent node[left]{}}
+    }
+}
+}
+child{node[hollow node,label=above right:{}]{}
+child{node[solid node]{}
+    child{node[hollow node,label=left:{}]{} 
+        child{node[solid node,label=below:{1}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{4}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{0}]{} edge from parent node[left]{}}
+    }
+}
+child{node[solid node]{}
+    child{node[hollow node,label=left:{}]{} 
+        child{node[solid node,label=below:{5}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{3}]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{}]{} 
+        child{node[solid node,label=below:{0}]{} edge from parent node[left]{}}
+    }
+}
+child{node[solid node]{}
+    child{node[hollow node,label=left:{}]{} 
+        child{node[solid node,label=below:{2}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{7}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{4}]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{}]{} 
+        child{node[solid node,label=below:{3}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{6}]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{}]{}
+        child{node[solid node,label=below:{5}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{3}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{1}]{} edge from parent node[left]{}}
+    }
+}
+};
+\end{tikzpicture}
+\end{center}
+
+\reponse{
+With regular minimax:\\
+\begin{tikzpicture}[scale=1.5,font=\footnotesize]
+\tikzstyle{solid node}=[circle,draw,inner sep=1.5,fill=black]
+\tikzstyle{hollow node}=[circle,draw,inner sep=1.5]
+\tikzstyle{level 1}=[level distance=10mm,sibling distance=4.5cm]
+\tikzstyle{level 2}=[level distance=10mm,sibling distance=1.5cm]
+\tikzstyle{level 3}=[level distance=10mm,sibling distance=0.7cm]
+\tikzstyle{level 4}=[level distance=10mm,sibling distance=0.3cm]
+\node(0)[solid node,label=left:{MAX (2)}]{}
+    child{node[hollow node,label=left:{MIN (2)}]{}
+    child{node[solid node,label=left:{MAX (3)}]{}
+        child{node[hollow node,label=left:{MIN (3)}]{} 
+        child{node[solid node,label=below:{4}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{3}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{5}]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{(1)}]{}
+        child{node[solid node,label=below:{2}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{1}]{} edge from parent node[left]{}}
+    }
+}
+child{node[solid node,label=left:{(2)} ]{}
+    child{node[hollow node,label=left:{(2)}]{} 
+        child{node[solid node,label=below:{4}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{2}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{3}]{} edge from parent node[left]{}}
+    }
+}
+child{node[solid node,label=left:{(7)}]{}
+    child{node[hollow node,label=left:{(4)}]{} 
+        child{node[solid node,label=below:{5}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{4}]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{(7)}]{} 
+        child{node[solid node,label=below:{7}]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{(2)}]{}
+        child{node[solid node,label=below:{3}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{2}]{} edge from parent node[left]{}}
+    }
+}
+}
+child{node[hollow node,label=above right:{(0)}]{}
+    child{node[solid node,label=left:{(0)}]{}
+        child{node[hollow node,label=left:{(0)}]{} 
+        child{node[solid node,label=below:{1}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{4}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{0}]{} edge from parent node[left]{}}
+    }
+}
+child{node[solid node,label=left:{(3)}]{}
+    child{node[hollow node,label=left:{(3)}]{} 
+        child{node[solid node,label=below:{5}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{3}]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{(0)}]{} 
+        child{node[solid node,label=below:{0}]{} edge from parent node[left]{}}
+    }
+}
+child{node[solid node,label=left:{(3)}]{}
+    child{node[hollow node,label=left:{(2)}]{} 
+        child{node[solid node,label=below:{2}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{7}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{4}]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{(3)}]{} 
+        child{node[solid node,label=below:{3}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{6}]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{(1)}]{}
+        child{node[solid node,label=below:{5}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{3}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{1}]{} edge from parent node[left]{}}
+    }
+}
+};
+\end{tikzpicture}
+$\alpha \beta$-pruning saves 17 evaluations, unvisited nodes are labelled in red
+
+\begin{tikzpicture}[scale=1.5,font=\footnotesize]
+\tikzstyle{solid node}=[circle,draw,inner sep=1.5,fill=black]
+\tikzstyle{hollow node}=[circle,draw,inner sep=1.5]
+\tikzstyle{level 1}=[level distance=10mm,sibling distance=4.5cm]
+\tikzstyle{level 2}=[level distance=10mm,sibling distance=1.5cm]
+\tikzstyle{level 3}=[level distance=10mm,sibling distance=0.7cm]
+\tikzstyle{level 4}=[level distance=10mm,sibling distance=0.3cm]
+\node(0)[solid node,label=left:{MAX (2)}]{}
+    child{node[hollow node,label=left:{MIN (2)}]{}
+    child{node[solid node,label=left:{MAX (3)}]{}
+        child{node[hollow node,label=left:{MIN (3)}]{} 
+        child{node[solid node,label=below:{4}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{3}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{5}]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{(2)}]{}
+        child{node[solid node,label=below:{2}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{1},color=red]{} edge from parent node[left]{}}
+    }
+}
+child{node[solid node,label=left:{(2)} ]{}
+    child{node[hollow node,label=left:{(2)}]{} 
+        child{node[solid node,label=below:{4}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{2}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{3}]{} edge from parent node[left]{}}
+    }
+}
+child{node[solid node,label=left:{(4)}]{}
+    child{node[hollow node,label=left:{(4)}]{} 
+        child{node[solid node,label=below:{5}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{4}]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{},color=red]{} 
+        child{node[solid node,label=below:{7},color=red]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{},color=red]{}
+        child{node[solid node,label=below:{3},color=red]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{2},color=red]{} edge from parent node[left]{}}
+    }
+}
+}
+child{node[hollow node,label=above right:{(1)}]{}
+    child{node[solid node,label=left:{(1)}]{}
+        child{node[hollow node,label=left:{(1)}]{} 
+        child{node[solid node,label=below:{1}]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{4},color=red]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{0},color=red]{} edge from parent node[left]{}}
+    }
+}
+child{node[solid node,label=left:{},color=red]{}
+    child{node[hollow node,label=left:{},color=red]{} 
+        child{node[solid node,label=below:{5},color=red]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{3},color=red]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{},color=red]{} 
+        child{node[solid node,label=below:{0},color=red]{} edge from parent node[left]{}}
+    }
+}
+child{node[solid node,label=left:{},color=red]{}
+    child{node[hollow node,label=left:{},color=red]{} 
+        child{node[solid node,label=below:{2},color=red]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{7},color=red]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{4},color=red]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{},color=red]{} 
+        child{node[solid node,label=below:{3},color=red]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{6},color=red]{} edge from parent node[left]{}}
+    }
+    child{node[hollow node,label=left:{},color=red]{}
+        child{node[solid node,label=below:{5},color=red]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{3},color=red]{} edge from parent node[left]{}}
+        child{node[solid node,label=below:{1},color=red]{} edge from parent node[left]{}}
+    }
+}
+};
+\end{tikzpicture}
+
+}
+\end{Q}
+
+\begin{Q}
+Implement the tic tac toe game using python so that you can play against an AI using the
+minimax algorithm (you can use the template (see page~\pageref{source})).
+\begin{center}
+\begin{tabular}{c|c|c}
+  X & X & O \\      \hline
+  O & X & X \\      \hline
+  O & X & O
+\end{tabular}
+\end{center}
+\reponse{
+    see github for implementation
+}
+\end{Q}
+
+
+
+
+% ##   ##    ##         
+% ##  ##     ##         
+% ## ##      ##         
+% ####       ##         
+% ##  ##     ##         
+% ##   ##    ##         
+% ##    ##   ######### 
+
+\paragraph{Local search applied to graphs: Kernighan-Lin}~\newline
+
+Kernighan-Lin is an algorithm to split a graph $\mathcal{G} = (\mathcal{V}, \mathcal{E})$ into two partitions $P_1$ and $P_2$ with a minimal cutisze. The cutsize $c$ is computed as $\sum_{i \in P_1, j \in P_2} w(e_{i,j})$, where $e_{i,j}$ is an edge $\in \mathcal{E}$ connecting two vertices $i, j \in \mathcal{V}$ in different partitions and $w$ the weight of said edge.
+
+The algorithm will be swapping pairs of vertices across the partition boundary in order to gradually improve the cutsize, as described in aglo~\ref{algo:kl}.
+The costs and gains it refers to are computed as follows:
+\begin{itemize}
+    \item External cost of vertex $x \in P_1$: $E_x = \sum_{i\in P_2}w(e_{x,i})$
+    \item Internal cost of vertex $x \in P_1$: $I_x = \sum_{i\in P_1}w(e_{x,i})$
+    \item Gain of swapping $x$ and $y$: $gain(x,y) = (E_x - I_x) + (E_y - I_y) - 2\cdot w(e_{x,y})$
+\end{itemize}
+
+\begin{algorithm}
+\caption{Kernighan-Lin}
+\label{algo:kl}
+\begin{algorithmic}[1]
+    \State Partition randomly into $P_1$ and $P_2$
+    \Comment Same size partitions
+    \State Compute initial cutsize
+    \Repeat
+        \State Unlock all vertices
+        \State Update costs $E_x$ and $I_x$
+        \While {Unlocked cells}
+            \ForAll{Unlocked vertices $x \in P_1$}
+                \ForAll{Unlocked vertices $y \in P_2$}
+                    \State Compute gain(x,y)
+                \EndFor
+            \EndFor
+            \State Swap pair with highest gain
+            \Comment Local search
+            \State Lock those two vertices
+        \EndWhile
+        \State Accept $n$ first swaps leading to minimal cutsize
+        \Comment Hill climbing
+    \Until{Cutsize is not improved}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{Q}
+Using the given template \texttt{q\_bonus\_kl\_template.py}, implement the KL partitioning algorithm.
+Each line of the input file \texttt{graph.txt} describes an edge of the graph and is formatted as follows: \texttt{<edge weight> <vertex i> <vertex j>}
+\reponse{
+    See file \texttt{q\_bonus\_kl.py}
+}
+\end{Q}
+
+
+\noindent
+\rule{\textwidth}{0.4pt}
+\footnotesize{Found an error? Let us know: \url{https://github.com/iridia-ulb/INFOH410/issues}}
+
+\end{document} 

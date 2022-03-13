@@ -1,0 +1,473 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsthm} %numéroter les questions
+\usepackage[english]{babel}
+\usepackage{datetime}
+\usepackage{xspace} % typographie IN
+\usepackage{hyperref}% hyperliens
+\usepackage[all]{hypcap} %lien pointe en haut des figures
+
+\usepackage{subcaption}
+\usepackage{fancyhdr}% en têtes
+\usepackage{graphicx} %include pictures
+\usepackage{pgfplots}
+\usepackage[]{algorithm2e}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{babel}
+\usepackage{circuitikz}
+% \usepackage{gnuplottex}
+\usepackage{float}
+\usepackage{ifthen}
+
+\usepackage[top=1.3 in, bottom=1.3 in, left=1.3 in, right=1.3 in]{geometry}
+\usepackage[]{pdfpages}
+\usepackage[]{attachfile}
+
+\usepackage{amsmath}
+\usepackage{enumitem}
+\setlist[enumerate]{label=\alph*)}% If you want only the x-th level to use this format, use '[enumerate,x]'
+\usepackage{multirow}
+
+\usepackage{aeguill} %guillemets
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% READ THIS BEFORE CHANGING ANYTHING
+%
+%
+% - TP number: can be changed using the command
+%		\def \tpnumber {TP 1 }
+%
+% - Version: controlled by a new command:
+%		\newcommand{\version}{v1.0.0}
+%
+% - Booleans: there are three booleans used in this document:
+%	- 'corrige', controlled by defining the variable 'corrige'
+% You can define those variables in a makefile using such a command:
+% pdflatex -shell-escape -jobname="infoh410_tp1" "\def\corrige{} \input{infoh410_tp1.tex}"
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Numero du TP :
+\def \tpnumber {TP GAA (Genetic Algorithms and Ant System) }
+
+\newcommand{\version}{v1.0.0}
+
+
+% ########     #####      #####    ##         #########     ###     ##      ##  
+% ##     ##  ##     ##  ##     ##  ##         ##           ## ##    ###     ##  
+% ##     ##  ##     ##  ##     ##  ##         ##          ##   ##   ## ##   ##  
+% ########   ##     ##  ##     ##  ##         ######     ##     ##  ##  ##  ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         #########  ##   ## ##  
+% ##     ##  ##     ##  ##     ##  ##         ##         ##     ##  ##     ###  
+% ########     #####      #####    #########  #########  ##     ##  ##      ##  
+\newboolean{corrige}
+\ifx\correction\undefined
+\setboolean{corrige}{false}% pas de corrigé
+\else
+\setboolean{corrige}{true}%corrigé
+\fi
+
+% \setboolean{corrige}{true}
+
+
+\definecolor{darkblue}{rgb}{0,0,0.5}
+
+\pdfinfo{
+/Author (ULB -- CoDe/IRIDIA)
+/Title (\tpnumber, INFO-H-410)
+/ModDate (D:\pdfdate)
+}
+
+\hypersetup{
+pdftitle={\tpnumber [INFO-H-410] Techniques of AI},
+pdfauthor={ULB -- CoDe/IRIDIA},
+pdfsubject={}
+}
+
+\theoremstyle{definition}% questions pas en italique
+\newtheorem{Q}{Question}[] % numéroter les questions [section] ou non []
+
+
+%  ######     #####    ##       ##  ##       ##     ###     ##      ##  ######      #######   
+% ##     ##  ##     ##  ###     ###  ###     ###    ## ##    ###     ##  ##    ##   ##     ##  
+% ##         ##     ##  ## ## ## ##  ## ## ## ##   ##   ##   ## ##   ##  ##     ##  ##         
+% ##         ##     ##  ##  ###  ##  ##  ###  ##  ##     ##  ##  ##  ##  ##     ##   #######   
+% ##         ##     ##  ##       ##  ##       ##  #########  ##   ## ##  ##     ##         ##  
+% ##     ##  ##     ##  ##       ##  ##       ##  ##     ##  ##     ###  ##    ##   ##     ##  
+%  #######     #####    ##       ##  ##       ##  ##     ##  ##      ##  ######      #######   
+\newcommand{\reponse}[1]{% pour intégrer une réponse : \reponse{texte} : sera inclus si \boolean{corrige}
+\ifthenelse {\boolean{corrige}} {\paragraph{Answer:} \color{darkblue}   #1\color{black}} {}
+}
+
+\newcommand{\addcontentslinenono}[4]{\addtocontents{#1}{\protect\contentsline{#2}{#3}{#4}{}}}
+
+
+%  #######   ##########  ##    ##   ##         #########  
+% ##     ##      ##       ##  ##    ##         ##         
+% ##             ##        ####     ##         ##         
+%  #######       ##         ##      ##         ######     
+%        ##      ##         ##      ##         ##         
+% ##     ##      ##         ##      ##         ##         
+%  #######       ##         ##      #########  #########  
+%% fancy header & foot
+\pagestyle{fancy}
+\lhead{[INFO-H-410] Techniques of AI\\ \tpnumber}
+\rhead{\version\\ page \thepage}
+\chead{\ifthenelse{\boolean{corrige}}{Correction}{}}
+%%
+
+\setlength{\parskip}{0.2cm plus2mm minus1mm} %espacement entre §
+\setlength{\parindent}{0pt}
+
+% ##########  ########   ##########  ##         #########  
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ######     
+%     ##         ##          ##      ##         ##         
+%     ##         ##          ##      ##         ##         
+%     ##      ########       ##      #########  ######### 
+\date{\vspace{-1.7cm}\version}
+\title{\vspace{-2cm} \tpnumber \\ Techniques of AI [INFO-H-410] \ifthenelse{\boolean{corrige}}{~\\Correction}{}}
+
+
+\begin{document}
+\selectlanguage{english}
+
+\maketitle
+
+\fbox{
+    \parbox{\textwidth}{
+    \label{source}
+\footnotesize{
+Source files, code templates and corrections related to practical sessions can be found on the UV 
+or on github (\url{https://github.com/iridia-ulb/INFOH410}).
+}}}
+
+\paragraph{Genetic Algorithms}
+
+\begin{Q}
+\begin{enumerate}
+\item Based on the two candidate solutions 11101001000 and 
+00001010101, apply the following crossover procedures:
+\begin{itemize}
+	\item Single-point crossover: 11111000000
+	\item Two-point crossover: 	  00111110000
+	\item Uniform crossover: 	  10011010011
+\end{itemize}
+\item Implement a genetic algorithm that starts with an initial
+population of randomly generated strings, and that returns a string 
+as close as possible to the target string ``Hello, World". 
+You can use the provided template in which the \texttt{fitness}, 
+\texttt{mutate},  and \texttt{crossover} functions are missing. Your goal is to 
+implement these functions, together with the core logic of the 
+algorithm.  
+\end{enumerate}
+
+\reponse{
+    (a) 11101001000 and 00001010101, give, spc: 00001001000, tpc: 11001011000, and uc: 01101001001 
+
+    (b) see github
+}
+
+\end{Q}
+
+\paragraph{Ant system}
+
+\begin{Q}
+\begin{enumerate}
+% \item What kind of algorithm is Ant system (AS)? Does AS guarantees 
+%to eventually find the optimal solution or to determine that no 
+%solution exists?
+ \item Is it possible to use AS with $\{\alpha=0, \beta=1\}$ or  $\{\alpha=1, \beta=0\}$? 
+     What is the effect in both cases?
+ \item How does $\rho$ relates with the exploration and exploitation performed by AS? What 
+     about $\alpha$ and $\beta$?
+% \item In class we used a minimization problem (TSP) as example, 
+%what modifications are needed to solve a maximization problem with 
+%AS?
+\end{enumerate}
+
+\reponse{
+    (a) Both options are possible, but maybe not a great idea. If AS is set with parameters 
+    $\alpha = 0$ and $\beta = 1$, pheromones will be neglected from the transition rule that 
+    ants employ to construct solutions, meaning that they will not be learning from high 
+    quality solutions found in previous iterations. On the other hand, if AS is set with 
+    $\alpha = 1$ and $\beta = 0$, ants solutions construction will be biased only by pheromone,
+    which may end up in low quality solutions, since the heuristic information also allows 
+    to select high quality solution components, but from a greedy perspective. In a nutshell, 
+    AS performance is generally better when the algorithm can profit both from the numerical 
+    information learned in past iterations (pheromones) and from problem-dependent information 
+    (heuristic information).
+
+
+    (b) $\rho$ controls the speed at which pheromone decreases. For large $\rho$ values, the 
+    value of pheromones will decrease faster resulting in a more exploratory behavior, and for 
+    small $\rho$ values, the value of pheromones will decrease slower leading to a more 
+    exploitative behavior. In the case of $\alpha$ and $\beta$, these two parameters control 
+    the relative influence of the pheromones and the heuristic information. When both values 
+    are large, the algorithm will behave more exploitative because ants will be biased towards 
+    solutions that have either high pheromone values or better heuristic information. 
+    Conversely, when both $\alpha$ and $\beta$ are small, the probability associated to all 
+    feasible solution components will be more even, resulting in a more exploratory behavior.
+}
+
+\end{Q}
+\begin{Q}
+ Assume the following symmetric Traveling Salesman Problem (TSP)
+ instance:
+   \begin{figure}[ht]
+   \begin{subfigure}{0.31\textwidth}
+   \begin{tabular} {| l | c |c | c | c | c |}
+   \hline
+        &  A  &  B  &  C  &  D  & E   \\
+    \hline
+      A & $-$ &  1  &  2  &  2  & 6   \\
+      B &  1  & $-$ &  6  &  8  & 10  \\  
+      C &  2  &  6  & $-$ &  12 & 4   \\
+      D &  2  &  8  & 12  & $-$ & 1   \\
+      E &  6  & 10  &  4  &   1 & $-$  \\
+    \hline
+   \end{tabular}
+   \caption{TSP instance (tsp)}
+   \end{subfigure}
+   ~~~~~~~~
+   \begin{subfigure}{0.45\textwidth}
+   \centering
+   \begin{tabular} {| l | c |c | c | c | c |}
+   \hline
+        &  A  &  B  &  C  &  D  & E   \\
+    \hline
+      A & $-$    &  0.56  &  0.66  &  0.60  & 0.50   \\
+      B &  0.56  & $-$    &  0.60  &  0.56  & 0.60  \\  
+      C &  0.66  &  0.60  & $-$    &  0.50  & 0.56   \\
+      D &  0.60  &  0.56  &  0.50  & $-$    & 0.66   \\
+      E &  0.50  &  0.60  &  0.56  &  0.66  & $-$  \\
+    \hline
+   \end{tabular}
+   \caption{Pheromone matrix ($\tau$) (iteration 1) }
+   \end{subfigure}
+   \end{figure}
+   
+   An Ant System algorithm is applied to this instance using $\alpha=2$, $\beta=1$, $\rho=0.5$, $\#ants=3$, $\eta_{ij}=1/tsp_{ij}$ and $\tau_0=1$, 
+   after the first iteration the pheromone matrix ($\tau$) is the one given in the figure above. 
+ \begin{enumerate}
+     \item What is the meaning of the values in $\tau$? Why $\tau_{C,D}=0.5$?
+     \item Use this information to generate the first solution of 
+     iteration 2 starting from city D. Use random numbers: $\{0.80, 0.27, 0.88, 0.47, 0.05, 0.98, 0.23, 0.06 \}$
+     
+ \item Actually, the following solutions generated by the algorithm are $AEDCBA$ with $cost=26$ and $DECBAD$ with $cost=14$. Update the pheromone using this information (disregard the solution of the previous question).
+     \item After 12 iterations the pheromone matrix is the following:
+        \begin{figure}[ht]
+           \centering
+           \begin{tabular} {| l | c |c | c | c | c |}
+            \hline
+                &  A  &  B  &  C  &  D  & E   \\
+            \hline
+              A & $-$     &  0.4285  &  0.0004  &  0.4285  & 0.0003   \\
+              B &  0.4285 & $-$      &  0.4286  &  0.0003  & 0.0003  \\  
+              C &  0.0004 &  0.4286  & $-$      &  0.0003  & 0.4285   \\
+              D &  0.4285 &  0.0003  &  0.0003  & $-$      & 0.4286   \\
+              E &  0.0003 &  0.0003  &  0.4285  &  0.4286  & $-$  \\
+            \hline
+            \end{tabular}
+            \caption{Pheromone matrix ($\tau$) (iteration 12)}
+        \end{figure}
+         
+         Would you advice to continue executing more iterations? Why?
+
+ \textit{Remember: the tour length is computed starting and ending in the same city.}
+ %\item How would you apply AS to the Graph Coloring Problem(GCP)? What would be the decision variables? How to define the pheromone? Is it possible to define heuristic information?\\
+ 
+\item Using the provided template, implement the \verb!compute_probability_matrix!, \verb!evaporate_pheromone!, \verb!deposit_pheromone! and \verb!get_next_city! functions of ACO for solving the TSP.
+
+  %\textit{Note: The objective of the GCP is to find the minimum number of different colors with which is possible to assign a color to each node of a given graph without having adjacent nodes with the same color.} 
+ \end{enumerate}
+
+ \reponse{
+    (a) $\tau_{i,j}$ indicates the desirability of adding edge $i$ to the tour being constructed 
+    by an ant when in edge $j$. Since $\rho=0.5$ and $\tau_0=1$, $\tau_{C,D}=0.5$ indicates that 
+    the edge $(C,D)$ was not part of the tour constructed by any ant.
+
+    (b) 
+    Using the random proportional rule of AS, 
+    $$p^k_{i,j}(t)= \frac{\tau_{i,j}(t)^{\alpha}\cdot \eta_{i,j}^{\beta}}{\sum_{l\in N^k_i}  \tau_{i,l}(t)^{\alpha}\cdot \eta_{i,l}^{\beta} },$$
+    we compute the probability of adding each feasible city, and using the roulette wheel
+    mechanism and the set of random numbers previously generated, we select one of the city to be added to the tour.
+    
+    This is done as follows: \\
+     	Initial city: D
+
+		Next city:\\
+	     \begin{tabular} { l | c |c | c | c | c |}
+			\cline{2-6}
+			& $j=$A  &  $j=$B  &  $j=$C  &  $j=$D  &  $j=$E\\
+			\hline
+			probabilities ($p^{k=1}_{D,j}(t=2)$) &  0.27 & 0.06 & 0.031 & 0 & 0.64\\
+			\hline
+            roulette wheel ($rnd= 0.80$) & 0.27 & 0.32 & 0.36 & 0 & \textbf{1}\\
+			\hline
+		\end{tabular}\\
+
+        Next city:\\
+	     \begin{tabular} { l | c |c | c | c | c |}
+			\cline{2-6}
+			& $j=$A  &  $j=$B  &  $j=$C  &  $j=$D  &  $j=$E\\
+			\hline
+			probabilities ($p^{k=1}_{E,j}(t=2)$) &  0.266  & 0.23  & 0.50  &  0  & 0\\
+			\hline
+            roulette wheel ($rnd= 0.27$) & 0.266  & \textbf{0.49}  & 1 & 0 & 0\\
+			\hline
+		\end{tabular}\\
+
+		Next city:\\
+	     \begin{tabular} { l | c |c | c | c | c |}
+			\cline{2-6}
+			& $j=$A  &  $j=$B  &  $j=$C  &  $j=$D  &  $j=$E\\
+			\hline
+			probabilities ($p^{k=1}_{A,j}(t=2)$) &  0.84 & 0 & 0.16  &  0  & 0\\
+			\hline
+            roulette wheel ($rnd= 0.88$) & 0.84 & 0 & \textbf{1}  &  0  & 0\\
+			\hline
+		\end{tabular}
+
+        The first solution constructed at iteration $t=2$ is: \textit{DEBCAD} %\textit{DEACBD}
+
+
+    (c) Using the pheromone update rule of AS, 
+    $$\tau_{i,j}(t)= (1-\rho)\cdot\tau_{i,j}(t-1)+ \sum_{k=1}^{m} \Delta\tau_{i,j}^k,$$ we get:
+
+	 $(AB) = (0.5)\cdot0.56 + (1/26)+(1/14) = 0.38989011$\\
+	 $(AC) = (0.5)\cdot0.66 = 0.33$\\
+	 $(AD) = (0.5)\cdot0.60 + (1/14) = 0.371428571$\\
+	 $(AE) = (0.5)\cdot0.50 + (1/26) = 0.288461538$\\
+	 $(BC) = (0.5)\cdot0.60 + (1/26)+(1/14) = 0.4098901$\\
+	 $(BD) = (0.5)\cdot0.56 = 0.28$\\
+	 $(BE) = (0.5)\cdot0.60 = 0.3 $\\
+	 $(CD) = (0.5)\cdot0.50 + (1/26) = 0.288461538$\\
+	 $(CE) = (0.5)\cdot0.56 + (1/14) = 0.351428571$\\
+	 $(DE) = (0.5)\cdot0.66 + (1/26)+(1/14) = 0.43989011$\\
+     
+    (d)
+	At this point the algorithm is stagnated, which means that the probability of 
+    constructing a set of solutions different from the one constructed in the last 
+    iteration is quite low. In this example, the algorithm will be constructing solutions
+     	$$
+     	\begin{aligned}
+     		&ABCEDA, \\
+     		&ADECBA, \\
+     		&BADECB, \\
+     		&BDECAB, \\
+     		&CBADEC, \\
+     		&CEDABC, \\
+     		&DABCED, \\
+     		&DECBAD, \\
+     		&ECBADE, \;\mathrm{and}\\
+     		&EDABCE
+     	\end{aligned}
+     	$$
+     	over and over again.
+
+        (e) see github for implementation
+ }
+
+ \end{Q}
+
+\clearpage
+\paragraph{Reminder}
+
+\begin{algorithm}[h!]
+	\KwData{$Pop_{size}$, $Num_{gen}$, 
+		$Crossover_{proc}$, $Mutation_{proc}$}
+		~\\
+		\For{i $\in$ ${1, .., Pop_{size}}$ }{
+			Population$\left[i\right]$ $\leftarrow$ RandomSolution()}
+			Evaluate(Population)\\
+			$S_{best}$ $\leftarrow$ GetBestSolution(Population)\\
+			\For{gen $\in$ ${1, .., Num_{gen}}$ }{
+				Parents $\leftarrow$ Selection(Population)\\
+				Children $\leftarrow$ $\phi$ \\
+				\For{$Parent_1$, $Parent_2$ $\in$ Parents}{
+					$Children_1$, $Children_2$ $\leftarrow$ 
+					Crossover($Parent_1$, $Parent_2$, 
+					$Crossover_{proc}$)\\
+					$Children_1$ $\leftarrow$ Mutate($Children_1$, 
+					$Mutation_{proc}$) \\
+					$Children_2$ $\leftarrow$ Mutate($Children_2$, 
+					$Mutation_{proc}$)
+					}
+			Evaluate(Children)\\
+			$P_{best}$ $\leftarrow$ 
+			GetBestSolution(Children)\\
+			\If{$P_{best}$ $>$ $S_{best}$}{$S_{best}$ 
+				$\leftarrow$ $P_{best}$}
+			Population $\leftarrow$ Children\\
+			}
+	\caption{Pseudocode for a simple \textbf{\large{genetic 
+	algorithm}}. 
+	$Pop_{size}$ 
+	is the number of individuals in the population, 
+	$Num_{gen}$ is the number of generations, 
+		$Crossover_{proc}$ is a crossover procedure, and 
+		$Mutation_{proc}$ is a mutation procedure.}
+	\label{alg:ga}
+\end{algorithm}
+						
+						
+						
+\begin{algorithm}[h!]
+	\KwData{$n$, $m$, $\alpha$, $\beta$, $\rho$, $\tau_0$}
+	~\\
+	\While{!termination()}{
+		\For{k $\in$ ${1, .., m}$}{
+			ants$\left[k\right]\left[1\right]$ $\leftarrow$ 
+			SelectRandomCity$()$\\
+			\For{i $\in$ ${2, n}$}{
+				ants$\left[k\right]\left[i\right]$ $\leftarrow$ 
+				ASDecisionRule$($ants, i$)$	
+			}
+			ants$\left[k\right]\left[n+1\right]$ $\leftarrow$ 
+			ants$\left[k\right]\left[1\right]$
+		}
+		UpdatePheromones$($ants$)$
+	}
+	\caption{Pseudocode for the \textbf{\large{Ant System 
+	algorithm}}. $n$ is 
+	the size 
+	of the problem, $m$ the number of ants, $\alpha$ and $\beta$ are 
+	parameters of the solution construction procedure ASDecisionRule 
+	(see Eq.~\ref{eq:deci}), 
+	$\rho$ is the parameter of the pheromone update procedure 
+	UpdatePheromones (see Eq.~\ref{eq:phero}), and $\tau_0$ is the 
+	initial value of the 
+	pheromones}
+	\label{alg:as}
+\end{algorithm}
+
+\begin{equation}\label{eq:deci}
+	ASDecisionRule \rightarrow p_{ij}^k(t) = 
+	\frac{\left[\tau_{ij}\right]^{\alpha}\cdot\left[\eta_{ij}\right]^\beta}
+	 {\sum_{l \in N_i^k} 
+	\left[\tau_{il}\right]^{\alpha}\cdot\left[\eta_{il}\right]^\beta},
+	\qquad \text{if} \quad j\in N_i^k
+\end{equation}
+
+\begin{equation}\label{eq:phero}
+\begin{aligned}
+	UpdatePheromones \rightarrow \tau_{ij}(t) = 
+	(1-\rho)\cdot\tau(t-1) + \sum_{k=1}^{m}\bigtriangleup\tau_{ij}^k 
+	\\
+	\tau_{ij}^k = \frac{1}{L_k}, \qquad \text{if $arc(i,j)$ is used 
+	by 
+	ant k on its tour}
+\end{aligned}
+\end{equation}
+
+\noindent
+\rule{\textwidth}{0.4pt}
+\footnotesize{Found an error? Let us know: \url{https://github.com/iridia-ulb/INFOH410/issues}}
+
+\end{document} 
