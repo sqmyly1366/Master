@@ -1,0 +1,50 @@
+//把第二个数分解了进loop, 2^0+2^1+..... 如果LSB=1,就把一个数向左移0位,1位,最后相加
+Movi 1,0x8000 //Number 1
+Movi 2,0x8  //Number 2
+
+Movi 7,1
+sw 7,0,0    //  Mask used to determine the LSB  000001
+
+loop: 	beq	2,0,end
+	//init
+	lw 7,0,0
+	//determine the lsb
+	nand	6,2,7
+	nand	6,6,6	// NAND&NAND=AND
+	beq	6,7,san
+	// What we need to do in the end of each loop
+	lw	7,0,3
+	lw	6,0,0
+	sha	7,7,6,si
+	//
+	addi	5,5,1  //exposant
+	//
+	//r4要左移（4-1）次=3次
+	movi	6,2
+	bl	5,6,1
+	shifti	4,4,1
+	//
+	shifti	2,2,-1
+	beq	0,0,loop
+
+si:	addi	4,4,1
+	movi	7,15
+	jalr	6,7
+	
+
+san:	sha	7,1,5 //对第一个数进行左移
+	sw	7,0,3  //把移完的1给存起来
+	add	3,3,7,sijia
+	//跳回去
+	movi	7,12
+	jalr	6,7
+
+sijia:	addi	4,4,1
+	//跳回去
+	movi	7,12
+	jalr	6,7
+
+
+end:	halt
+
+	

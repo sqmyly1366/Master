@@ -1,0 +1,53 @@
+//把第二个数分解了进loop, 2^0+2^1+..... 如果LSB=1,就把一个数向左移0位,1位,最后相加
+Movi 1,0X6000 //Number 1
+Movi 2,0X6000  //Number 2
+
+Movi 7,1
+sw 7,0,0    //  Mask used to determine the LSB  000001
+
+loop: 	beq	2,0,end
+	//init
+	lw 7,0,0
+	//determine the lsb
+	nand	6,2,7
+	nand	6,6,6	// NAND&NAND=AND
+	beq	6,7,san
+	// What we need to do in the end of each loop
+	addi	5,5,1  //exposant
+	//
+	lw	4,0,3
+	shifti	4,4,1  //不管有没有overf,R4左移一位
+	sw	4,0,3
+	//
+	lw	7,0,5
+	lw	6,0,0
+	sha	7,7,6,si//不能跳太远(+7,-8)   如果左移后的1左移还会saturation的话
+
+	shifti	2,2,-1
+	beq	0,0,loop
+
+
+
+si:	lw	4,0,3
+	addi	4,4,1
+	
+	movi	7,19
+	jalr	6,7
+
+
+san:	sha	7,1,5 //对第一个数进行左移
+	sw	7,0,5 //把new 1给存起来
+	add	3,3,7,sijia //如果现在的3和new 1相加有saturation的话，对4进行操作
+	//跳回去
+	movi	7,12
+	jalr	6,7
+
+sijia:	lw	4,0,3
+	addi	4,4,1
+	
+	movi	7,12
+	jalr	6,7
+
+end:	halt
+
+	
