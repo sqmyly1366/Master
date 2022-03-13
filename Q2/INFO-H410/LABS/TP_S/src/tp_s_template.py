@@ -41,12 +41,11 @@ def q1():
 def q3():
     """the graph can be stored using a adjency list or an adjency matrix.
     Usually, the matrix is easier to use but uses more memory, here we use
-    an adjency list.
-    We store states as indexes in the list, where S->0, A->1, B->2 etc.
-    each sublist represents the list all states to which state i is
-    connected, with associated cost."""
+    an adjency list."""
     print("Q2:")
-
+    # we store states as indexes in the list, where S->0, A->1, B->2 etc.
+    # each sublist represents the list all states to which state i is connected, with
+    # associated cost.
     graph = [
         [(2, 7), (1, 3)],  # S
         [(4, 6), (3, 1)],  # A
@@ -59,8 +58,16 @@ def q3():
     ]
     weights = [10, 5, 8, 3, 2, 4, 0, 0]
 
-    # your search:
-    # ...
+    # Breadth(Depth) first search:
+    q = deque([(0, 0)])
+    while len(q) != 0:
+        current = q.popleft()  # Breadth
+        # current = q.pop()  # Depth
+        if current[0] == 7 or current[0] == 6:
+            print(f"Found Goal {current[0]} with cost: {current[1]}")
+            break
+        for neighbors in graph[current[0]]:
+            q.append((neighbors[0], current[1] + neighbors[1]))
 
 
 def q4():
