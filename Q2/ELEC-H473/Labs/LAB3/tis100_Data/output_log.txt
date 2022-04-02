@@ -36,7 +36,7 @@ Platform assembly: C:\Users\sqmyl\Desktop\Master\Master\Q2\ELEC-H473\Labs\LAB3\t
 Loading C:\Users\sqmyl\Desktop\Master\Master\Q2\ELEC-H473\Labs\LAB3\tis100_Data\Managed\Ionic.Zip.Reduced.dll into Unity Child Domain
 Platform assembly: C:\Users\sqmyl\Desktop\Master\Master\Q2\ELEC-H473\Labs\LAB3\tis100_Data\Managed\MoonSharp.Interpreter.dll (this message is harmless)
 Loading C:\Users\sqmyl\Desktop\Master\Master\Q2\ELEC-H473\Labs\LAB3\tis100_Data\Managed\MoonSharp.Interpreter.dll into Unity Child Domain
-- Completed reload, in  0.203 seconds
+- Completed reload, in  0.106 seconds
 <RI> Initializing input.
 XInput1_3.dll not found. Trying XInput9_1_0.dll instead...
 <RI> Input initialized.
