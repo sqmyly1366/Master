@@ -1,0 +1,5 @@
+__pycache__/
+__private/
+config.ini
+*.js
+.python-version
