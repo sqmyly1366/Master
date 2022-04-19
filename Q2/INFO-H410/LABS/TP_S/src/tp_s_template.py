@@ -12,7 +12,7 @@ def q1():
     d.append(3)
     d.append(2)
     print(d.pop())
-    print(d.pop()) #移除最后一个元素并返回。默认最后一个值
+    print(d.pop()) #移除最后一个元素并返回这个元素。默认最后一个值
     #测试
     print('测试')
     print(d)
